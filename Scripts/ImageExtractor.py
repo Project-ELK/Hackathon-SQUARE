@@ -5,7 +5,7 @@ import time
  
 # What you enter here will be searched for in
 # Google Images
-query = "dogs"
+query = "jelly cat frog"
 
 options = webdriver.ChromeOptions()
 # This will disable any extensions installed in chrome (for testing)
@@ -40,6 +40,8 @@ time.sleep(1)
 # Only gets the first element found on the search
 firstImageReturned = driver.find_elements(by='css selector', value='.FRuiCf')[0]
 imageElement = firstImageReturned.find_element(By.TAG_NAME,'img')
+# Outputs image src
+print(imageElement.get_attribute('src'))
 print("done")
 
 driver.close()
