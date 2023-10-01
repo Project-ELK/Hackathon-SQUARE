@@ -51,7 +51,7 @@ time.sleep(1)
 # Only gets the first element found on the search
 firstImageReturned = driver.find_elements(by='css selector', value='.FRuiCf')[0]
 imageElement = firstImageReturned.find_element(By.TAG_NAME,'img')
-listOfImageURLS.append(imageElement.get_attribute('src'))
+listOfImageURLS.append([imageElement.get_attribute('src')])
 # TODO: Write IMAGE URL to CSV
 
 for i in range(1,len(listOfNames)):
@@ -68,16 +68,22 @@ for i in range(1,len(listOfNames)):
         firstImageReturned = driver.find_elements(by='css selector', value='.FRuiCf')[0]
         imageElement = firstImageReturned.find_element(By.TAG_NAME,'img')
         # print(imageElement.get_attribute('src'))
-        listOfImageURLS.append(imageElement.get_attribute('src'))
+        listOfImageURLS.append([imageElement.get_attribute('src')])
     except Exception as e:
-        listOfImageURLS.append("")
+        listOfImageURLS.append([""])
 
 
-numpyList[:, 3] = listOfImageURLS
-formatted_data = np.array([f'{row[0]}, "{row[1]}", "{row[2]}", "{row[3]}"' for row in numpyList])
-# savedArray = np.asarray(numpyList)
+with open("./Catalog/imageCatalog.csv", 'w', newline='') as file:
+  writer = csv.writer(file)
+  writer.writerows(listOfImageURLS)
+file.close()
 
-np.savetxt('./Catalog/ImageCatalog.csv', formatted_data, delimiter=',', fmt='%s', header='Item Number,Item ID,Item Name,Image URL', comments='')
+
+# numpyList[:, 3] = listOfImageURLS
+# formatted_data = np.array([f'{row[0]}, "{row[1]}", "{row[2]}", "{row[3]}"' for row in numpyList])
+# # savedArray = np.asarray(numpyList)
+
+# np.savetxt('./Catalog/ImageCatalog.csv', formatted_data, delimiter=',', fmt='%s', header='Item Number,Item ID,Item Name,Image URL', comments='')
 driver.close()
 driver.quit()
 
