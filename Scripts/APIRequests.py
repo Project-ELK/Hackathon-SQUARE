@@ -7,20 +7,10 @@ client = Client(
     environment="sandbox"
 )
 
-
-with open("./Catalog/catalog.csv", 'w', newline='') as file:
-  writer = csv.writer(file)
-  writer.writerow(["ITEM ID GOES HERE", "ITEM NAME GOES HERE", "BLANK (WILL BE IMAGE URL) GOES HERE"])
-file.close()
-  
-  
-  # with open('./Data/MasterScore.csv', 'a', newline='') as file:
-  #           writer = csv.writer(file)
-  #           writer.writerow(["ITEM ID GOES HERE", "ITEM NAME GOES HERE", "BLANK (WILL BE IMAGE URL) GOES HERE"])
-
+file = None
 
 try:
-  with open("./Catalog/catalog.csv", 'w', newline='') as file:
+  with open("./Catalog/VariationIdCatalog.csv", 'w', newline='') as file:
     writer = csv.writer(file)
     prevCursor = ""
     result = None
@@ -42,9 +32,10 @@ try:
       if result.is_success():
         for object in result.body["objects"]:
           item_id = object["id"]
-          item_name = object["item_data"]["name"]
+          variation_id = object["item_data"]["variations"][0]["id"]
+          # item_name = object["item_data"]["name"]
           # print(globalCountItems, item_id, item_name)
-          writer.writerow([globalCountItems,item_id, item_name, ""])
+          writer.writerow([globalCountItems,variation_id])
           globalCountItems += 1
       elif result.is_error():
         # TODO throw error
