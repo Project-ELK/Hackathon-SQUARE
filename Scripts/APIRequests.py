@@ -33,10 +33,17 @@ try:
         for object in result.body["objects"]:
           item_id = object["id"]
           variation_id = object["item_data"]["variations"][0]["id"]
+          try:
+            price = int(object["item_data"]["variations"][0]["item_variation_data"]["price_money"]["amount"])
+          except:
+            price = 0
           # item_name = object["item_data"]["name"]
           # print(globalCountItems, item_id, item_name)
-          writer.writerow([globalCountItems,variation_id])
+          writer.writerow([globalCountItems,price])
+          # if globalCountItems == 5878:
+          #   print("HI")
           globalCountItems += 1
+          
       elif result.is_error():
         # TODO throw error
         pprint(result.errors)
