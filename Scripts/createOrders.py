@@ -28,6 +28,7 @@ with open('./Catalog/ImageCatalog.csv', 'r') as f:
 # TODO: Do the FOR LOOP HERE
 lineItems = []
 total_payment = 0
+itemCount = 0
 for itemID, price in listOfItemVariationIDs:
   
   item_price = int(price)
@@ -53,104 +54,65 @@ for itemID, price in listOfItemVariationIDs:
   elif item_price >= 0 and random.randint(1,100) >20:
     lowerBound = 1
   
+  # Repeats the process every 300 items
   
+  # If the lineItem list has reached the maximum amount, we need to make the order (for the previous line items)
+  if itemCount >= 299:
+    # Creating an order
+    result = client.orders.create_order(
+    body = {
+      "order": {
+        "location_id": "L9SATKFBV2TKY",
+        "line_items": lineItems,
+        "state": "OPEN"
+      },
+      "idempotency_key": generateIdem()
+    }
+    )
+    order_id = None
+    if result.is_success():
+      print(result.body)
+      order_id = str(result.body["order"]["id"])
+    elif result.is_error():
+      print(result.errors)
+
+    # Creating the payment for the above order
+    result = client.payments.create_payment(
+      body = {
+        "source_id": "CASH",
+        "idempotency_key": generateIdem(),
+        "amount_money": {
+          "amount": total_payment,
+          "currency": "GBP"
+        },
+        "order_id": order_id,
+        "cash_details": {
+          "buyer_supplied_money": {
+            "amount": total_payment,
+            "currency": "GBP"
+          }
+        }
+      }
+    )
+    if result.is_success():
+      print(result.body)
+    elif result.is_error():
+      print(result.errors)
+    
+    # Resets the lineItems array and the total payment
+    lineItems = []
+    itemCount = 0
+    total_payment = 0
+  else:
+    itemCount += 1
   # GENERATE LINE ITEMS + values
+  quantity_of_items = random.randint(lowerBound, upperBound)
   lineItems.append({
-      "quantity": str(random.randint(lowerBound, upperBound)),
+      "quantity": str(quantity_of_items),
       "catalog_object_id": str(itemID),
       "base_price_money": {
         "amount": item_price,
         "currency": "GBP"
       }
   })
-  total_payment += item_price
-  
-# Creating an order
-result = client.orders.create_order(
-body = {
-  "order": {
-    "location_id": "L9SATKFBV2TKY",
-    "line_items": lineItems,
-    "state": "OPEN"
-  },
-  "idempotency_key": generateIdem()
-}
-)
-order_id = None
-if result.is_success():
-  print(result.body)
-  order_id = str(result.body["order"]["id"])
-elif result.is_error():
-  print(result.errors)
-
-
-
-result = client.payments.create_payment(
-  body = {
-    "source_id": "CASH",
-    "idempotency_key": generateIdem(),
-    "amount_money": {
-      "amount": total_payment,
-      "currency": "GBP"
-    },
-    "order_id": order_id,
-    "cash_details": {
-      "buyer_supplied_money": {
-        "amount": total_payment,
-        "currency": "GBP"
-      }
-    }
-  }
-)
-
-""""
-////////////////request body for creating order
-
-result = client.orders.create_order(
-  body = {
-    "order": {
-      "location_id": "L9SATKFBV2TKY",
-      "line_items": [
-        {
-          "quantity": "1",
-          "catalog_object_id": "FVQV2MWPNULZ2DL3VKJM64UA",
-          "item_type": "ITEM"
-        }
-      ],
-      "state": "OPEN"
-    },
-    "idempotency_key": "ecd2cce9-2d90-4fd4-8a05-89eea2c9c8d2"
-  }
-)
-
-if result.is_success():
-  print(result.body)
-elif result.is_error():
-  print(result.errors)
-
-
-///////////////request body for payment of order
-
-result = client.payments.create_payment(
-  body = {
-    "source_id": "CASH",
-    "idempotency_key": "ad0af642-c020-4cab-a04f-2398138768a9",
-    "amount_money": {
-      "amount": 571,
-      "currency": "GBP"
-    },
-    "order_id": "itlYBvOJoizKHvmiBubN9jVTIeIZY",
-    "cash_details": {
-      "buyer_supplied_money": {
-        "amount": 571,
-        "currency": "GBP"
-      }
-    }
-  }
-)
-
-if result.is_success():
-  print(result.body)
-elif result.is_error():
-  print(result.errors)
-"""
+  total_payment += (item_price * quantity_of_items)
