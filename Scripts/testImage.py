@@ -67,3 +67,4 @@ with open('./Catalog/keywords.csv', 'w', newline="", encoding='UTF-8') as kf:
 kf.close()
     
 
+    
