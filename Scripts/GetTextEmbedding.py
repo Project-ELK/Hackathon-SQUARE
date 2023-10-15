@@ -55,17 +55,14 @@ pool = sqlalchemy.create_engine(
 )
 
 data_array = None
-file = None
 with pool.connect() as db_conn:
     # Looping through keywords in batches of five (ones with empty embeddings)
     try:
-        
         while True:
             result = db_conn.execute(sqlalchemy.text("SELECT Keyword_ID, Keyword FROM Keywords WHERE text_embedding IS NULL LIMIT 5;")).fetchall()
             if not result:
                 print("no keywords")
                 connector.close #Closes connection to the database
-                if file: file.close() #Closes the file if it exists
                 break
             # db_conn.execute(sqlalchemy.text("ALTER TABLE Keywords ADD text_embedding BLOB AFTER Keyword;"))
             # commit transaction
@@ -78,9 +75,9 @@ with pool.connect() as db_conn:
             embeddings = text_embedding(arrOfKeywords)            
             
             for i, embedding in enumerate(embeddings):
-                keyword_id = data_array[0,i]
+                keyword_id = data_array[:,0][i]
                 # Serialise the text embeddings
-                blobbies = pickle.dumps(embeddings[i].values)
+                blobbies = pickle.dumps(embedding.values)
 
                 # Insert Into the Keywords table
                 db_conn.execute(sqlalchemy.text("UPDATE Keywords SET text_embedding = :blob WHERE Keyword_ID = :keyword_id;"),parameters={"blob": blobbies, "keyword_id":keyword_id})
@@ -98,12 +95,9 @@ with pool.connect() as db_conn:
                 # Calculate cosine similarity between the two vectors
                 # similarity = 1 - cosine(testTextEmbed[0].values, loaded_array)
                 # print(f"Cosine Similarity: {similarity}")
-                break
-            break
  
     except Exception as error:
         print(f"Error in database: {error}")
-        # file.close()
         # Close the database connection
         connector.close()
     # Executes a select query (acquires 5 keywords where embeddings is blank)

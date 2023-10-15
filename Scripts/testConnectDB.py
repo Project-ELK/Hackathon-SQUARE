@@ -25,15 +25,30 @@ pool = sqlalchemy.create_engine(
     creator=getconn,
 )
 
+# TODO: Offer regular sync of sales data to the db.
+
+
 data_array = None
 with pool.connect() as db_conn:
-    result = db_conn.execute(sqlalchemy.text("SELECT Keyword,text_embedding FROM Keywords WHERE Keyword_ID = 1;")).fetchall()
+    
+    # TODO: --------------- TEST NESTED SQL QUERY ----------------------
+    # query ="SELECT Item_Name FROM Items WHERE Item_ID = '22BPJ5NDB3J6KRXC3YNAXBEE';"
+    item_id = "22BPJ5NDB3J6KRXC3YNAXBEE"
+    query =f"SELECT Date, Item, Gross_Sales FROM Item_Sales WHERE Item = (SELECT Item_Name FROM Items WHERE Item_ID = '{item_id}')"
+    
+    
+    # itemName = "AFUNTA Hubsan X4 H107C Quadcopter Black / Red Spare Parts Crash Pack Includes One Body Shell + One HD Camera PCB Module (200W) + One Protection Cover + 4 Rubber Feet + 4 Spare Blades Set (16 pieces) + One Spare 380mA Battery +2pcs Motors + One U Wrench"
+    # query = f"SELECT * FROM Items WHERE Item_Name = '{itemName}'"
+    result = db_conn.execute(sqlalchemy.text(query)).fetchall()
     # db_conn.execute(sqlalchemy.text("SELECT count(*) FROM Keywords;"))
     
     # commit transaction (SQLAlchemy v2.X.X is commit as you go)
     db_conn.commit()
 
     # Do something with the results
+    
+    if not result: print ("No results found")
+    
     for row in result:
         print(row)
 
