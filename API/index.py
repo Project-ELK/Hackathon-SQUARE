@@ -1,9 +1,10 @@
-from flask import Flask, request, render_template, redirect, url_for, jsonify
+from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory
 import os
 
 app = Flask(__name__)
 # Define the upload folder
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = 'static'
+
 
 # Allowed file extensions
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -13,6 +14,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Main page -
 @app.route('/', methods=['GET', 'POST'])
 def upload_image():
     if request.method == 'POST':
@@ -33,7 +35,7 @@ def upload_image():
         if file and allowed_file(file.filename):
             # Gets the current working directory
             current_working_directory = os.getcwd().replace("\\","/")
-            filename = current_working_directory+f"/api/{app.config['UPLOAD_FOLDER']}/{file.filename}"
+            filename = current_working_directory+f"/API/{app.config['UPLOAD_FOLDER']}/{file.filename}"
             # Saves image locally
             file.save(filename)
             print("file saved")
@@ -44,7 +46,8 @@ def upload_image():
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return f'Image: {filename} has been uploaded successfully.'
+    image_url = url_for('static', filename=f'uploads/{filename}')
+    return render_template('image_display.html', image_url=image_url)
 
 @app.route('/api/hello', methods=['GET'])
 def hello_world():
@@ -53,7 +56,3 @@ def hello_world():
 
 if __name__ == '__main__':
      app.run(debug=False)
-
-# if request.method == 'POST':
-# f = request.files['the_file']
-# f.save('/var/www/uploads/uploaded_file.txt')
