@@ -31,9 +31,13 @@ def upload_image():
         
         # If the file is allowed, save it to the upload folder
         if file and allowed_file(file.filename):
-            filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            # Gets the current working directory
+            current_working_directory = os.getcwd().replace("\\","/")
+            filename = current_working_directory+f"/api/{app.config['UPLOAD_FOLDER']}/{file.filename}"
+            # Saves image locally
             file.save(filename)
             print("file saved")
+            # Redirects user to success message (route)
             return redirect(url_for('uploaded_file', filename=file.filename))
 
     return render_template('upload_image.html')
@@ -42,26 +46,13 @@ def upload_image():
 def uploaded_file(filename):
     return f'Image: {filename} has been uploaded successfully.'
 
-
-# @app.route('/', methods=['GET']) 
-# def index():
-#     """
-#     INPUT -> image
-#     OUTPUT -> list of similar items & score
-#     """
-
-#     return jsonify({"message": "HELLO WORLD"})
-#     # return 'Index Page'
-
-
-
 @app.route('/api/hello', methods=['GET'])
 def hello_world():
     # Make an API call to "Hello, World"
     return jsonify({"message": "HELLO WORLD"})
 
 if __name__ == '__main__':
-     app.run(debug=True)
+     app.run(debug=False)
 
 # if request.method == 'POST':
 # f = request.files['the_file']
