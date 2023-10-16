@@ -3,9 +3,11 @@ import sqlalchemy
 import pymysql
 import os
 import numpy as np
+from collections import defaultdict
+import datetime
 
 connector = Connector()
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\ghela\Documents\Hackathon-SQUARE\Scripts\winged-scout-401122-ae11907f66c0.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\kazim\Documents\GitHub\Hackathon-SQUARE\Scripts\winged-scout-401122-ae11907f66c0.json"
 
 # function to return the database connection
 def getconn() -> pymysql.connections.Connection:
@@ -42,12 +44,68 @@ def getSalesData(itemID):
     connector.close()
     return np.array(result)
 
+# ------------ HELPER FUNCTIONS -----------------
+
+def is_within_last_6_months(date):
+  """Checks if a datetime.date is within the last 6 months of the current date.
+  Args:
+    date: A datetime.date object.
+  Returns:
+    True if the given date is within the last 6 months of the current date, False otherwise.
+  """
+  current_date = datetime.date.today()
+  six_months_ago = current_date - datetime.timedelta(days=6 * 30.5)
+  return date >= six_months_ago
+
+def is_between_last_7_to_12_months(date):
+  """Checks if a datetime.date is between the last 7 months to 12 months of the current date.
+  Args:
+    date: A datetime.date object.
+  Returns:
+    True if the given date is between the last 7 months to 12 months of the current date, False otherwise.
+  """
+  current_date = datetime.date.today()
+  seven_months_ago = current_date - datetime.timedelta(days=7 * 30.5)
+  twelve_months_ago = current_date - datetime.timedelta(days=12 * 30.5)
+  return date >= seven_months_ago and date <= twelve_months_ago
+
+
 
 # ------------ TEST AREA -----------------
 
 sales_data_for_item = getSalesData('22BPJ5NDB3J6KRXC3YNAXBEE')
-for row in sales_data_for_item:
-    print (row)
+
+def parseSalesData(sales_data_for_item):
+    salesData = [sales_data_for_item[0][1], len(sales_data_for_item)]   # [name, quantity, revenue, dates, 6 months, 7-12 months, +12 months]
+    totalRevenue = 0
+    countDates = defaultdict(int)
+    sixMonths = defaultdict(int)
+    twelveMonths = defaultdict(int)
+    aboveTwelveMonths = defaultdict(int)
+    for row in sales_data_for_item:
+        totalRevenue += row[2]
+        countDates[str(row[0])] += 1
+
+        if is_within_last_6_months(row[0]):
+            sixMonths[str(row[0])] += 1
+        elif is_between_last_7_to_12_months(row[0]):
+            twelveMonths[str(row[0])] += 1
+        else:
+            aboveTwelveMonths[str(row[0])] += 1
+
+    salesData.append(totalRevenue)
+    salesData.append(countDates)
+    salesData.append(sixMonths)
+    salesData.append(twelveMonths)
+    salesData.append(aboveTwelveMonths)
+
+    return salesData    
+
+parsedData = parseSalesData(sales_data_for_item)
+print(parsedData)
+
+
+
 
 
 # TODO: Calculate the output based on a weighted formula (use of dates required) --> SALES VOLUME
