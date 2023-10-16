@@ -8,6 +8,7 @@ from google.cloud.sql.connector import Connector
 import sqlalchemy
 import pymysql
 import pickle
+import time
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\ghela\Documents\Hackathon-SQUARE\Scripts\winged-scout-401122-ae11907f66c0.json"
 aiplatform.init(project="winged-scout-401122")
@@ -57,49 +58,52 @@ pool = sqlalchemy.create_engine(
 data_array = None
 with pool.connect() as db_conn:
     # Looping through keywords in batches of five (ones with empty embeddings)
-    try:
+    
         while True:
-            result = db_conn.execute(sqlalchemy.text("SELECT Keyword_ID, Keyword FROM Keywords WHERE text_embedding IS NULL LIMIT 5;")).fetchall()
-            if not result:
-                print("no keywords")
-                connector.close #Closes connection to the database
-                break
-            # db_conn.execute(sqlalchemy.text("ALTER TABLE Keywords ADD text_embedding BLOB AFTER Keyword;"))
-            # commit transaction
-            db_conn.commit()
-            
-            # Numpy Array to acquire the list of Item_IDs and Keywords where embeddings are blank
-            data_array = np.array(result)
-            arrOfKeywords = data_array[:,1]
-            # call get embedings on the each keywords
-            embeddings = text_embedding(arrOfKeywords)            
-            
-            for i, embedding in enumerate(embeddings):
-                keyword_id = data_array[:,0][i]
-                # Serialise the text embeddings
-                blobbies = pickle.dumps(embedding.values)
-
-                # Insert Into the Keywords table
-                db_conn.execute(sqlalchemy.text("UPDATE Keywords SET text_embedding = :blob WHERE Keyword_ID = :keyword_id;"),parameters={"blob": blobbies, "keyword_id":keyword_id})
+            try:
+                print("Looping again")
+                result = db_conn.execute(sqlalchemy.text("SELECT Keyword_ID, Keyword FROM Keywords WHERE text_embedding IS NULL LIMIT 5;")).fetchall()
+                if not result:
+                    print("no keywords")
+                    connector.close #Closes connection to the database
+                    break
+                # db_conn.execute(sqlalchemy.text("ALTER TABLE Keywords ADD text_embedding BLOB AFTER Keyword;"))
+                # commit transaction
                 db_conn.commit()
+                
+                # Numpy Array to acquire the list of Item_IDs and Keywords where embeddings are blank
+                data_array = np.array(result)
+                arrOfKeywords = data_array[:,1]
+                # call get embedings on the each keywords
+                embeddings = text_embedding(arrOfKeywords)            
+                
+                for i, embedding in enumerate(embeddings):
+                    keyword_id = data_array[:,0][i]
+                    # Serialise the text embeddings
+                    blobbies = pickle.dumps(embedding.values)
 
-                # Check if the blob was saved
-                # result2 = db_conn.execute(sqlalchemy.text("SELECT text_embedding FROM Keywords WHERE Keyword_ID = 1;")).fetchall()
-                # db_conn.commit()
+                    # Insert Into the Keywords table
+                    db_conn.execute(sqlalchemy.text("UPDATE Keywords SET text_embedding = :blob WHERE Keyword_ID = :keyword_id;"),parameters={"blob": blobbies, "keyword_id":keyword_id})
+                    db_conn.commit()
+                    print("Adding to the database")
 
-                # deseralize
-                # loaded_array = pickle.loads(result2[0][0])
+                    # Check if the blob was saved
+                    # result2 = db_conn.execute(sqlalchemy.text("SELECT text_embedding FROM Keywords WHERE Keyword_ID = 1;")).fetchall()
+                    # db_conn.commit()
 
-                # testTextEmbed = text_embedding(arrOfKeywords=["railway"])
-                # TEST COSINE SIMILARITY
-                # Calculate cosine similarity between the two vectors
-                # similarity = 1 - cosine(testTextEmbed[0].values, loaded_array)
-                # print(f"Cosine Similarity: {similarity}")
- 
-    except Exception as error:
-        print(f"Error in database: {error}")
+                    # deseralize
+                    # loaded_array = pickle.loads(result2[0][0])
+
+                    # testTextEmbed = text_embedding(arrOfKeywords=["railway"])
+                    # TEST COSINE SIMILARITY
+                    # Calculate cosine similarity between the two vectors
+                    # similarity = 1 - cosine(testTextEmbed[0].values, loaded_array)
+                    # print(f"Cosine Similarity: {similarity}")
+            except Exception as error:
+                print(f"Error in database: {error}")
+                time.sleep(55)
         # Close the database connection
-        connector.close()
+        # connector.close()
     # Executes a select query (acquires 5 keywords where embeddings is blank)
     
 # loaded_array = None
