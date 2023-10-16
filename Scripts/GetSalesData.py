@@ -7,7 +7,7 @@ from collections import defaultdict
 import datetime
 
 connector = Connector()
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\kazim\Documents\GitHub\Hackathon-SQUARE\Scripts\winged-scout-401122-ae11907f66c0.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getcwd()+"\winged-scout-401122-ae11907f66c0.json"
 
 # function to return the database connection
 def getconn() -> pymysql.connections.Connection:
@@ -76,7 +76,7 @@ def is_between_last_7_to_12_months(date):
 sales_data_for_item = getSalesData('22BPJ5NDB3J6KRXC3YNAXBEE')
 
 def parseSalesData(sales_data_for_item):
-    salesData = [sales_data_for_item[0][1], len(sales_data_for_item)]   # [name, quantity, revenue, dates, 6 months, 7-12 months, +12 months]
+    salesData = [sales_data_for_item[0][1], len(sales_data_for_item)]   # [name, quantity, revenue, dates overview, 6 months, 7-12 months, +12 months]
     totalRevenue = 0
     countDates = defaultdict(int)
     sixMonths = defaultdict(int)
@@ -109,3 +109,10 @@ print(parsedData)
 
 
 # TODO: Calculate the output based on a weighted formula (use of dates required) --> SALES VOLUME
+
+
+# ['Ladies Nun Fancy Dress Outfit Mother Superior Super Hero Costume', 2, Decimal('33.20'), 
+# defaultdict(<class 'int'>, {'2023-10-04': 2}), 
+# defaultdict(<class 'int'>, {'2023-10-04': 2}), 
+# defaultdict(<class 'int'>, {}), 
+# defaultdict(<class 'int'>, {})]

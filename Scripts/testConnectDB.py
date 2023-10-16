@@ -6,7 +6,7 @@ import numpy as np
 
 # initialize Connector object
 connector = Connector()
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\ghela\Documents\Hackathon-SQUARE\Scripts\winged-scout-401122-ae11907f66c0.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getcwd()+ "\winged-scout-401122-ae11907f66c0.json"
 
 # function to return the database connection
 def getconn() -> pymysql.connections.Connection:

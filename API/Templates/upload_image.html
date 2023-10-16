@@ -10,7 +10,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            /* height: 100vh; */
             margin: 0;
         }
         h1 {
@@ -37,13 +37,78 @@
         input[type="submit"]:hover {
             background-color: #2980b9;
         }
+        .upload-button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            }
+
+        .upload-button:hover {
+            background-color: #2980b9;
+        }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            
+            <a class="navbar-brand" href="#">
+                <img src="../static/hammer.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+                Project ELK
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                <a class="nav-link" href="../">Home<span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Our Project Idea</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Video</a>
+                </li>
+            </ul>
+            </div>
+        </nav>
+    </div>
     <h1>Upload an Image</h1>
-    <form method="POST" enctype="multipart/form-data"  id="upload-form">
-        <input type="file" name="file" id="file-input">
-        <input type="submit" value="Upload">
-    </form>
+    <section class="m-10 p-3 bg-light text-dark" id="uploadfile">
+        <div class="container-lg">
+            <div class="input-group mb-3 p-5 text-dark">
+                <form method="POST" enctype="multipart/form-data"  id="upload-form">
+                    <input type="file" class="form-control" name="file" id="file-input">
+                    <input type="submit" value="Upload">
+                </form>
+
+            </div>    
+         </div>
+
+        <br><br>
+        
+        <div class='container-lg' id="tableContainer"></div>
+        
+    </section>
+    
+    <script>
+        const uploadButton = document.querySelector('.upload-button');
+
+        uploadButton.addEventListener('mouseover', () => {
+        uploadButton.style.backgroundColor = '#2980b9';
+        });
+
+        uploadButton.addEventListener('mouseout', () => {
+        uploadButton.style.backgroundColor = 'blue';
+        });
+
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

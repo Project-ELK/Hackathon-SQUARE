@@ -14,8 +14,8 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Main page -
-@app.route('/', methods=['GET', 'POST'])
+# Uploads page -
+@app.route('/uploads', methods=['GET', 'POST'])
 def upload_image():
     if request.method == 'POST':
         # Check if a file was submitted
@@ -44,9 +44,15 @@ def upload_image():
 
     return render_template('upload_image.html')
 
+@app.route('/', methods=['GET'])
+def root_Page():
+    return render_template('itemIndex.html')
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     image_url = url_for('static', filename=f'uploads/{filename}')
+    # Call function to process image
+    
     return render_template('image_display.html', image_url=image_url)
 
 @app.route('/api/hello', methods=['GET'])

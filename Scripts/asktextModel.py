@@ -4,7 +4,7 @@ import os
 import timeit
 
 vertexai.init(project="winged-scout-401122")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\Eashan Ghelani\Documents\Hackathon-SQUARE\Scripts\winged-scout-401122-ae11907f66c0.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getcwd()+"/winged-scout-401122-ae11907f66c0.json"
 
 parameters = {
     "candidate_count": 1,
