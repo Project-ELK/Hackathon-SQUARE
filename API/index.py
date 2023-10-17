@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory
 import os
 
+from Scripts.GetItemSummary import getSummary
+
 app = Flask(__name__)
 # Define the upload folder
 app.config['UPLOAD_FOLDER'] = 'static'
@@ -51,9 +53,11 @@ def root_Page():
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     image_url = url_for('static', filename=f'uploads/{filename}')
-    # Call function to process image
-    
-    return render_template('image_display.html', image_url=image_url)
+
+    #TODO:    
+    #summary_data = getSummary()
+
+    return render_template('image_display.html', image_url=image_url, summary_data = summary_data)
 
 @app.route('/api/hello', methods=['GET'])
 def hello_world():

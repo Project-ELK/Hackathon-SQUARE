@@ -1,9 +1,9 @@
-from ImageKeywords import classifyImage
+from Scripts.ImageKeywords import classifyImage
 import numpy as np
 import os
 from pprint import pprint 
 
-from GetTextEmbedding import *
+from Scripts.GetTextEmbedding import *
 
 def getItemKeywordFromImage(fileName):
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getcwd()+"\winged-scout-401122-ae11907f66c0.json"
@@ -19,7 +19,7 @@ def getItemKeywordFromImage(fileName):
 
     # TODO: Pass Keywords matrix to the returnSimilarityScores() function in GetTextEmbeddings --> see example
 
-    print ("DONE")
+    print ("getItemKeywordFromImage() is DONE")
     return keywordsMatrix
 
 def getSummary():
@@ -46,6 +46,8 @@ def getSummary():
 
     arr = np.array(similarScores)
     arr = arr[arr[:, 4].argsort()][::-1]
+
+    pprint(arr)
 
     return arr
 
