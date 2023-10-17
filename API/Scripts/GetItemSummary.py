@@ -52,6 +52,10 @@ def getSummary():
     return arr
 
 
+
+if __name__ == "__main__":
+    similarScores = getSummary()
+
 # 4) does it sell well
 
 # # 2) get keywords of uploaded image
