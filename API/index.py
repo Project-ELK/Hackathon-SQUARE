@@ -56,6 +56,7 @@ def uploaded_file(filename):
 
     #TODO:    
     #summary_data = getSummary()
+    summary_data = [["hi", 1, 4], ["hi", 1, 4], ["hi", 1, 4]]
 
     return render_template('image_display.html', image_url=image_url, summary_data = summary_data)
 
