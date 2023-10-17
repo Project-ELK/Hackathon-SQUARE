@@ -36,23 +36,58 @@
                 <a class="nav-link" href="/uploads">Upload Image<span class="sr-only"></span></a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#">Our Project Idea</a>
+                <a class="nav-link" href="#desc">Our Project Idea</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#">Video</a>
+                <a class="nav-link" href="#video">Video</a>
                 </li>
             </ul>
             </div>
         </nav>
     </div>
-    <section class="bg-white text-dark" id="description">
-        <div class="container-lg">
+    <section class="m-10 p-3 bg-white text-dark" id="description">
+        <div class="container-lg" id="desc">
             <h1>Our Project</h1>
+            <h2>Our Idea</h2>
+                <p class='m-3 p-3'>Our aim is to aid businesses in reducing costs and loss by implementing a recommendation system where we predict whether a new product will sell well.</p>
+                <br></br>
+            <h2>How it works</h2>
+            <div class="m-10 p-3 row">
+                <div class="col-4">
+                  <div class="list-group" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">1. Data Cleansing and Extracting</a>
+                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">2. Keywords of Existing Items</a>
+                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">3. Keyword Matching</a>
+                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings" role="tab" aria-controls="list-settings">4. Recommendations</a>
+                  </div>
+                </div>
+                <div class="col-8">
+                  <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">To understand the market share during the cost of living crisis, we created a recommendation system that incorporates the business' sales data. We extracted this using Square's API which we are able to extract the items' key details such as product name, description, price, etc...
+                        <br></br>
+                        In order to replicate a business' sales history, we have used Amazon's toy data by using website scraping.
+                        <br></br>
+                        We then uploaded the item database onto a cloud database.</div>
+                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">To extract key information about an item, we decided to use Google's Cloud Vision. By inputting the item's image, we were able to extract 10 keywords from each item.
+                        <br></br>
+                        We then uploaded this data onto a cloud database.</div>
+                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">We decided to use Natural Language Processing methods such as text embeddings which respected each item's keywords list as a matrix. Then we compared this to different items using cosine similarity.</div>
+                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">We created a webpage as our interface because of its ease of use. This way, the user can simply browse around the page using the navigation bar.
+                        <br></br>
+                        In the upload image page, the user inputs a concept image of their new product.
+                        <br></br>
+                        The system then returns the recommendations.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br></br>
+            <h2>Our Team</h2>
         </div>
     </section>
 
-    <section class="bg-light text-dark" id="video">
-        <div class="container-lg">
+    <section class="m-10 p-3 bg-light text-dark" id="video">
+        <div class="container-lg" id="video">
             <h1>Summary</h1>
         </div>
     </section>
