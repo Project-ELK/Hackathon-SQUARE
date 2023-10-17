@@ -5,6 +5,7 @@ import os
 import numpy as np
 from collections import defaultdict
 import datetime
+import math
 
 connector = Connector()
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getcwd()+"\winged-scout-401122-ae11907f66c0.json"
@@ -41,7 +42,6 @@ def getSalesData(itemID):
             print ("No results found")
             return None
         # Store the results into a numpy array
-    connector.close()
     return np.array(result)
 
 # ------------ HELPER FUNCTIONS -----------------
@@ -72,9 +72,6 @@ def is_between_last_7_to_12_months(date):
 
 
 # ------------ TEST AREA -----------------
-
-sales_data_for_item = getSalesData('22BPJ5NDB3J6KRXC3YNAXBEE')
-
 def parseSalesData(sales_data_for_item):
     salesData = [sales_data_for_item[0][1], len(sales_data_for_item)]   # [name, quantity, revenue, dates overview, 6 months, 7-12 months, +12 months]
     totalRevenue = 0
@@ -101,15 +98,62 @@ def parseSalesData(sales_data_for_item):
 
     return salesData    
 
-parsedData = parseSalesData(sales_data_for_item)
-print(parsedData)
+# SUM(quantity of items sold) / COUNT(number of items)
 
+# Items between 0-25
 
+# Items between 25-60
 
+# Items between 60 - 100
+
+# Items between 100 + 
+
+def getSalesAverages(isSix = False, is7to12 = False, isMore12 = False, price = 0):
+  with pool.connect() as db_conn:
+        # Query to get sales data for the specific item
+        lowerBound = 0
+        upperBound = 0
+        
+        if (price <=25):
+          upperBound = 25
+        elif price>25 and price <= 60:
+          lowerBound = 25
+          upperBound = 60
+        elif price >60 and price <= 100:
+          lowerBound = 60
+          upperBound = 100
+        else:
+          lowerBound = 100
+          upperBound = 99999
+        
+        
+        if isSix:
+          query =f"SELECT AVG(Qty) FROM Item_Sales WHERE Gross_Sales>= {lowerBound} AND Gross_Sales <= {upperBound};"
+        elif is7to12:
+          query =f"SELECT AVG(Qty) FROM Item_Sales WHERE Gross_Sales>= {lowerBound} AND Gross_Sales <= {upperBound};"
+        elif isMore12:
+          query =f"SELECT AVG(Qty) FROM Item_Sales WHERE Gross_Sales>= {lowerBound} AND Gross_Sales <= {upperBound};"
+        else:
+          query =f"SELECT AVG(Qty) FROM Item_Sales WHERE Gross_Sales>= {lowerBound} AND Gross_Sales <= {upperBound};"
+        # Executes the query
+        result = db_conn.execute(sqlalchemy.text(query)).fetchall()
+        # commit transaction to db
+        db_conn.commit()
+        # If no results are returned...
+        if not result: 
+            print ("No results found")
+            return 0
+        return math.ceil(result[0][0])
+        # Store the results into a numpy array
 
 
 # TODO: Calculate the output based on a weighted formula (use of dates required) --> SALES VOLUME
-
+if __name__ == "__main__":
+  sales_data_for_item = getSalesData('22BPJ5NDB3J6KRXC3YNAXBEE')
+  parsedData = parseSalesData(sales_data_for_item)
+  print(parsedData)
+  # averageSold = getSalesAverages(isSix=True, price = 16.60)
+  # print(averageSold)
 
 # ['Ladies Nun Fancy Dress Outfit Mother Superior Super Hero Costume', 2, Decimal('33.20'), 
 # defaultdict(<class 'int'>, {'2023-10-04': 2}), 

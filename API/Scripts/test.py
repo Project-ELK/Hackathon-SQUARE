@@ -71,6 +71,30 @@
     # print(result.errors)
     
 
-import os  
-current_working_directory = os.getcwd().replace("\\","/")
-print (current_working_directory)
+import os
+import csv
+
+
+
+    
+
+csv_file = os.getcwd() + "\Catalog\ImageCatalog.csv"
+
+# Initialize an empty list to store the data
+data_list = []
+Item_IDs = ["SDERZHIYV4YW6ZDKI5JDEI4L", "BURVEPSTHM3ZKMXJM5YRHU56", "KQNEN6K453INUCQU7KUVRSQK", "CYEWL5USOHTJ77XCUUNLOAJ6" , "LP4USC6ALKPDO446UMZHUPRK"]
+
+
+with open(csv_file, 'r') as file:
+    csv_reader = csv.reader(file)
+    next(csv_reader)
+    for row in csv_reader:
+        # if ()
+        if row[1] == Item_IDs[0] or row[1] == Item_IDs[1] or row[1] == Item_IDs[2] or row[1] == Item_IDs[3] or row[1] == Item_IDs[4]:
+            data_list.append(row[5])
+
+
+print("DONE")
+
+# current_working_directory = os.getcwd().replace("\\","/")
+# print (current_working_directory)
