@@ -92,9 +92,9 @@ def generateTextEmbeddingsBulk():
 def generateEmbeddings(keywords):
     model = TextEmbeddingModel.from_pretrained("textembedding-gecko-multilingual")
     embeddings1 = model.get_embeddings(keywords[:5])  # first 5
-    embeddings2 = model.get_embeddings(keywords[5:10])  # last 5
+    # embeddings2 = model.get_embeddings(keywords[5:10])  # last 5
     embeddingVectors = []
-    for embedding in embeddings1 + embeddings2:
+    for embedding in embeddings1: #+ embeddings2:
         embeddingVectors.append(embedding.values)
     return embeddingVectors
 

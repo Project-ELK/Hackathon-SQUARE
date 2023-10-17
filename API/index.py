@@ -55,7 +55,7 @@ def uploaded_file(filename):
     image_url = url_for('static', filename=f'uploads/{filename}')
 
     #TODO:    
-    #summary_data = getSummary()
+    summary_data = getSummary()
 
     return render_template('image_display.html', image_url=image_url, summary_data = summary_data)
 
