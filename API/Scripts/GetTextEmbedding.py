@@ -9,7 +9,6 @@ import sqlalchemy
 import pymysql
 import pickle
 import time
-import heapq
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getcwd()+"\winged-scout-401122-ae11907f66c0.json"
 aiplatform.init(project="winged-scout-401122")
