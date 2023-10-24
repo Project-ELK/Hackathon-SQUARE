@@ -13,5 +13,7 @@ pip install squareup google-cloud-aiplatform uuid SQLAlchemy pymysql numpy googl
 ```
 
 ## Usage
+1) Run the index.py file inside the API folder
+2) Navigate to localhost:5000 in your webbrowser
 
 ##
